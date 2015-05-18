@@ -1,0 +1,7 @@
+.DS_Store
+.eclipse
+.project
+.classpath
+.settings
+target/**
+tmp/**

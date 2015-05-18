@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Jobs>
+<Resources>
+	<Resource name="res-app-log" path="src/test/resource/etl/applog/${day}/*" granu="day"/>
+	<Resource name="res-user-ids" path="src/test/resource/etl/userid/${day}/*" granu="day"/>
+	<Resource name="res-app-channels" path="src/test/resource/etl/channels.map" />
+	<Resource name="res-traffic-mobile" path="tmp/traffic/${day}/" granu="day"/>
+</Resources>
+<Job mapper="com.dianping.rtable.shell.test.job.TestEtlMapper"
+	flow="com.dianping.rtable.shell.test.job.TestEtlMRFlow"
+	reducer="com.dianping.rtable.shell.test.job.TestEtlReducer"
+	outputFormat="com.dianping.rtable.shell.output.ExtraValMultiOutputFormat">
+	<Inputs>
+		<Input id="input-app-log" >
+			<Part ref="res-app-log" offset="-1" span="1" />
+		</Input>
+		<Input id="input-user-ids" >
+			<Part ref="res-user-ids" offset="-1" span="1" />
+		</Input>
+	</Inputs>
+	<Configs>
+		<Config id="conf-app-channels">
+			<Part ref="res-app-channels" />
+		</Config>
+	</Configs>
+	<Arguments>
+		<Arg id="arg-log-source" value="loukou" />
+	</Arguments>
+	<Output ref="res-traffic-mobile"/>
+</Job>
+</Jobs>

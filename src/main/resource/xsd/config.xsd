@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+    <xsd:complexType name="JobsType">
+		<xsd:sequence>
+			<xsd:element name="Resources" type="ResourcesType" maxOccurs="1" minOccurs="1"/>
+			<xsd:element name="Job" type="JobType" maxOccurs="unbounded" minOccurs="1" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="JobType">
+		<xsd:sequence>
+			<xsd:element name="Inputs" type="InputsType" maxOccurs="1" minOccurs="1" />
+			<xsd:element name="Configs" type="ConfigsType" maxOccurs="1" minOccurs="0" />
+			<xsd:element name="Arguments" type="ArgumentsType" maxOccurs="1" minOccurs="0" />
+			<xsd:element name="Output" type="OutputType" maxOccurs="1" minOccurs="1" />
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string" default="HappyJob"/>
+		<xsd:attribute name="mapper" type="xsd:string" use="required" />
+		<xsd:attribute name="flow" type="xsd:string" use="required" />
+		<xsd:attribute name="reducer" type="xsd:string" />
+		<xsd:attribute name="combiner" type="xsd:string" />
+		<xsd:attribute name="comparator" type="xsd:string" />
+		<xsd:attribute name="groupingComparator" type="xsd:string" />
+		<xsd:attribute name="inputFormat" type="xsd:string" default="org.apache.hadoop.mapreduce.lib.input.TextInputFormat" />
+		<xsd:attribute name="outputFormat" type="xsd:string" default="org.apache.hadoop.mapreduce.lib.output.TextOutputFormat" />
+		<xsd:attribute name="partitioner" type="xsd:string" default="org.apache.hadoop.mapreduce.lib.partition.HashPartitioner" />
+		<xsd:attribute name="lzoInput" type="xsd:boolean" default="false"/>
+		<xsd:attribute name="lzoOutput" type="xsd:boolean" default="false"/>
+		<xsd:attribute name="reducerNum" type="xsd:int" default="10" />
+	</xsd:complexType>
+
+	<xsd:complexType name="ResourcesType">
+		<xsd:sequence>
+			<xsd:element name="Resource" type="ResourceType" maxOccurs="unbounded" minOccurs="1" />
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:simpleType name="granuType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="none"/>
+			<xsd:enumeration value="day"/>
+			<xsd:enumeration value="hour"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	<xsd:complexType name="ResourceType">
+		<xsd:attribute name="name" type="xsd:string" use="required" />
+		<xsd:attribute name="path" type="xsd:string" use="required" />
+		<xsd:attribute name="granu" type="granuType" default="none" />
+	</xsd:complexType>
+	
+	<xsd:complexType name="InputsType">
+		<xsd:sequence>
+			<xsd:element name="Input" type="InputType"	maxOccurs="unbounded" minOccurs="1" />
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="InputType">
+		<xsd:sequence>
+			<xsd:element name="Part" type="PartType" maxOccurs="unbounded" minOccurs="1" />
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:string" use="required" />
+	</xsd:complexType>
+	
+	<xsd:complexType name="ConfigsType">
+		<xsd:sequence>
+			<xsd:element name="Config" type="ConfigType" maxOccurs="unbounded" minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="ConfigType">
+		<xsd:sequence>
+			<xsd:element name="Part" type="PartType" maxOccurs="unbounded" minOccurs="1" />
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:string" use="required" />
+	</xsd:complexType>
+	
+	<xsd:complexType name="ArgumentsType">
+		<xsd:sequence>
+			<xsd:element name="Arg" type="ArgType" maxOccurs="unbounded" minOccurs="0" />
+			<xsd:element name="Args" type="ArgsType" maxOccurs="unbounded" minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="ArgType">
+		<xsd:attribute name="id" type="xsd:string" use="required" />
+		<xsd:attribute name="value" type="xsd:string" use="required" />
+	</xsd:complexType>
+	
+	<xsd:complexType name="ArgsType">
+		<xsd:sequence>
+			<xsd:element name="Value" type="xsd:string" maxOccurs="unbounded" minOccurs="0" />
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:string" use="required" />
+	</xsd:complexType>
+	
+	<xsd:complexType name="PartType">
+		<xsd:attribute name="ref" type="xsd:string" use="required" />
+		<xsd:attribute name="offset" type="xsd:int" default="0" />
+		<xsd:attribute name="span" type="xsd:int" default="1" />
+	</xsd:complexType>
+	
+	<xsd:complexType name="OutputType">
+		<xsd:attribute name="ref" type="xsd:string" use="required" />
+	</xsd:complexType>
+	
+	<xsd:element name="Jobs" type="JobsType" />
+</xsd:schema>
